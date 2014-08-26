@@ -50,12 +50,12 @@ public class GetSPByID{
 	private static Context context;
 	// Init Static field
 	static {
-		mApplication.addOnAppInitCallBack(new Runnable() {
+		MyApplication.addOnAppInitCallBack(new Runnable() {
 			@Override
 			public void run()
 			{
-				sp = mApplication.getSharedPreferences();
-				context = mApplication.getContext();
+				sp = MyApplication.getSharedPreferences();
+				context = MyApplication.getContext();
 			}
 		});
 	}

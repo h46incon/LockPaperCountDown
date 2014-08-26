@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.tools.h46incon.lockpapaercountdown.R;
 import com.tools.h46incon.lockpapaercountdown.util.GetSPByID;
-import com.tools.h46incon.lockpapaercountdown.util.mApplication;
+import com.tools.h46incon.lockpapaercountdown.util.MyApplication;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +27,7 @@ public class SetWallPaper{
 	 */
 	public static void updateLockPaper()
 	{
-		WallpaperManager mWallManager = WallpaperManager.getInstance(mApplication.getContext());
+		WallpaperManager mWallManager = WallpaperManager.getInstance(MyApplication.getContext());
 		Class<?> wallPaperMangerClass = WallpaperManager.class;
 		try {
 			Method setLockPaperMethod = wallPaperMangerClass.getDeclaredMethod("setBitmapToLockWallpaper", Bitmap.class);
@@ -55,7 +55,7 @@ public class SetWallPaper{
 	public static void updateWallPaper()
 	{
 		// Test to change lock screen wallpaper
-		WallpaperManager mWallManager = WallpaperManager.getInstance(mApplication.getContext());
+		WallpaperManager mWallManager = WallpaperManager.getInstance(MyApplication.getContext());
 
 		int countDownNumber = getCountDownNumber();
 		Bitmap newb = getWallPaper("" + countDownNumber, 500, 800);
@@ -105,7 +105,7 @@ public class SetWallPaper{
 	{
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;
-		Bitmap templateBM = BitmapFactory.decodeResource(mApplication.getContext().getResources(), R.drawable.lock_screen, options);
+		Bitmap templateBM = BitmapFactory.decodeResource(MyApplication.getContext().getResources(), R.drawable.lock_screen, options);
 		Log.d(TAG, "TemplateBitMap size : " + templateBM.getWidth() + " * " + templateBM.getHeight());
 
 		// new bitmap read before is immutable
