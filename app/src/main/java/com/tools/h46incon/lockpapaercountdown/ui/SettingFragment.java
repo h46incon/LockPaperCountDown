@@ -1,8 +1,9 @@
-package com.tools.h46incon.lockpapaercountdown;
+package com.tools.h46incon.lockpapaercountdown.ui;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
+import com.tools.h46incon.lockpapaercountdown.R;
 import com.tools.h46incon.lockpapaercountdown.tools.SetWallPaper;
 
 /**

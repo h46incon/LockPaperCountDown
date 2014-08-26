@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapaercountdown.tools;
+package com.tools.h46incon.lockpapaercountdown.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;

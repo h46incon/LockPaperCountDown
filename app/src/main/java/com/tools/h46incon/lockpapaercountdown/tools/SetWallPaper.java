@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 import com.tools.h46incon.lockpapaercountdown.R;
+import com.tools.h46incon.lockpapaercountdown.util.mApplication;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +20,9 @@ import java.lang.reflect.Method;
  * Created by Administrator on 2014/8/26.
  */
 public class SetWallPaper {
+	/*
+		Warning: The function is only available for MeiZu phone, MX3 tested
+	 */
 	public static void testSetLockPaper()
 	{
 		WallpaperManager mWallManager = WallpaperManager.getInstance(mApplication.getContext());
