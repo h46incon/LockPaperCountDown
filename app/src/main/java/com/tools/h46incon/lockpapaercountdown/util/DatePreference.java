@@ -72,5 +72,9 @@ public class DatePreference extends DialogPreference{
 	}
 
 	private DatePicker mDatePicker;
-	private long mDateInMS;
+	// The mDateInMS will be init in onSetInitialValue()
+	// This may not always be called.
+	// One example is if it should not persist but there is no default value given.
+	// So should init with a default value here
+	private long mDateInMS = System.currentTimeMillis();
 }
