@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
+import com.tools.h46incon.lockpapaercountdown.tools.mApplication;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,10 +31,10 @@ public class SettingFragment extends PreferenceFragment{
 		testSetWallPaper();
 	}
 
-	private void testSetWallPaper()
+	public static void testSetWallPaper()
 	{
 		// Test to change lock screen wallpaper
-		WallpaperManager mWallManager = WallpaperManager.getInstance(getActivity());
+		WallpaperManager mWallManager = WallpaperManager.getInstance(mApplication.getContext());
 
 		Bitmap newb = getWallPaper("test", 500, 800);
 
@@ -43,7 +45,7 @@ public class SettingFragment extends PreferenceFragment{
 		}
 	}
 
-	private Bitmap getWallPaper(String msgToDraw, float x, float y)
+	private static Bitmap getWallPaper(String msgToDraw, float x, float y)
 	{
 		Bitmap newb = getWallpaperTemplate();
 
@@ -61,11 +63,11 @@ public class SettingFragment extends PreferenceFragment{
 		return newb;
 	}
 
-	private Bitmap getWallpaperTemplate()
+	private static Bitmap getWallpaperTemplate()
 	{
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inScaled = false;
-		Bitmap templateBM = BitmapFactory.decodeResource(getResources(), R.drawable.lock_screen, options);
+		Bitmap templateBM = BitmapFactory.decodeResource(mApplication.getContext().getResources(), R.drawable.lock_screen, options);
 		Log.d(TAG, "TemplateBitMap size : " + templateBM.getWidth() + " * " + templateBM.getHeight());
 
 		// new bitmap read before is immutable
@@ -75,9 +77,9 @@ public class SettingFragment extends PreferenceFragment{
 		return newb;
 	}
 
-	private void testSetLockPaper()
+	public static void testSetLockPaper()
 	{
-		WallpaperManager mWallManager = WallpaperManager.getInstance(getActivity());
+		WallpaperManager mWallManager = WallpaperManager.getInstance(mApplication.getContext());
 		Class<?> wallPaperMangerClass = WallpaperManager.class;
 		try {
 			Method setLockPaperMethod = wallPaperMangerClass.getDeclaredMethod("setBitmapToLockWallpaper", Bitmap.class);
@@ -101,6 +103,6 @@ public class SettingFragment extends PreferenceFragment{
 		}
 	}
 
-	final String TAG = "SettingFragment";
+	private static final String TAG = "SettingFragment";
 
 }
