@@ -16,8 +16,8 @@ public class SettingFragment extends PreferenceFragment{
 	{
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.setting_preference);
-		//testSetLockPaper();
-		SetWallPaper.testSetWallPaper();
+		//updateLockPaper();
+		SetWallPaper.updateWallPaper();
 	}
 
 }

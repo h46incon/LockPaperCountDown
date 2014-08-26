@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 import com.tools.h46incon.lockpapaercountdown.R;
+import com.tools.h46incon.lockpapaercountdown.util.GetSPByID;
 import com.tools.h46incon.lockpapaercountdown.util.mApplication;
 
 import java.io.IOException;
@@ -19,11 +20,12 @@ import java.lang.reflect.Method;
 /**
  * Created by Administrator on 2014/8/26.
  */
-public class SetWallPaper {
+public class SetWallPaper{
 	/*
 		Warning: The function is only available for MeiZu phone, MX3 tested
+		Update lock screen's count down number
 	 */
-	public static void testSetLockPaper()
+	public static void updateLockPaper()
 	{
 		WallpaperManager mWallManager = WallpaperManager.getInstance(mApplication.getContext());
 		Class<?> wallPaperMangerClass = WallpaperManager.class;
@@ -31,7 +33,8 @@ public class SetWallPaper {
 			Method setLockPaperMethod = wallPaperMangerClass.getDeclaredMethod("setBitmapToLockWallpaper", Bitmap.class);
 			setLockPaperMethod.setAccessible(true);
 
-			Bitmap lockPaper = getWallPaper("25", 700, 1520);
+			int countDownNumber = getCountDownNumber();
+			Bitmap lockPaper = getWallPaper("" + countDownNumber, 700, 1520);
 //			Method getLockWallpaperDesiredMinimumWidthMethod = wallPaperMangerClass.getMethod("getLockWallpaperDesiredMinimumWidth");
 //			int minWidth = (Integer)getLockWallpaperDesiredMinimumWidthMethod.invoke(mWallManager);
 //			Method getLockWallpaperDesiredMinimumHeightMethod = wallPaperMangerClass.getMethod("getlockWallpaperDesiredMinimumHeight");
@@ -49,18 +52,35 @@ public class SetWallPaper {
 		}
 	}
 
-	public static void testSetWallPaper()
+	public static void updateWallPaper()
 	{
 		// Test to change lock screen wallpaper
 		WallpaperManager mWallManager = WallpaperManager.getInstance(mApplication.getContext());
 
-		Bitmap newb = getWallPaper("test", 500, 800);
+		int countDownNumber = getCountDownNumber();
+		Bitmap newb = getWallPaper("" + countDownNumber, 500, 800);
 
 		try {
 			mWallManager.setBitmap(newb);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static int getCountDownNumber()
+	{
+		long desTime = GetSPByID.getLong(R.string.pref_key_destination_date, -1);
+		if (desTime == -1) {
+			return -1;
+		}
+
+		long curTime = System.currentTimeMillis();
+		long disTimeInMillis = desTime - curTime;
+
+		final long millisOfDay = 1000 * 60 * 60 * 24;
+
+		// The destination time must be a date which time is 0:00
+		return (int)(disTimeInMillis / millisOfDay) + 1;
 	}
 
 	private static Bitmap getWallPaper(String msgToDraw, float x, float y)
@@ -96,4 +116,5 @@ public class SetWallPaper {
 	}
 
 	private static final String TAG = "SetWallPaper";
+
 }
