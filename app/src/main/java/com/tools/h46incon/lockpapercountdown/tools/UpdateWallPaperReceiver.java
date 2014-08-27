@@ -40,20 +40,30 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 
 	public static void stopAutoUpdate()
 	{
-		// TODO:
+		PendingIntent pendingIntent = getUpdaterPendingIntent();
+		AlarmManager alarmManager =
+				(AlarmManager) appContext.getSystemService(Service.ALARM_SERVICE);
+		alarmManager.cancel(pendingIntent);
+	}
+
+	private static PendingIntent getUpdaterPendingIntent()
+	{
+		Intent intent = new Intent(appContext, UpdateWallPaperReceiver.class);
+
+		final int intendID = 0x305;
+		return PendingIntent.getBroadcast(appContext, intendID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 
 	private static void setNextUpdateAlarm()
 	{
 
-		Intent intent = new Intent(appContext, UpdateWallPaperReceiver.class);
-		PendingIntent pendingIntent =
-				PendingIntent.getBroadcast(appContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = getUpdaterPendingIntent();
 		AlarmManager alarmManager =
 				(AlarmManager) appContext.getSystemService(Service.ALARM_SERVICE);
 
 		// Calc next weekup time
 		long nextWeekupTime = tomorrowTimeMillis();
+//		long nextWeekupTime = System.currentTimeMillis() + 5000;
 		Log.i(TAG, "setting next alarm: " + nextWeekupTime);
 		alarmManager.set(AlarmManager.RTC_WAKEUP, nextWeekupTime, pendingIntent);
 
