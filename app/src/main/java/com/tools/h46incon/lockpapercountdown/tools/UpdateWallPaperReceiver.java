@@ -15,7 +15,7 @@ import com.tools.h46incon.lockpapercountdown.util.MyApplication;
 import java.util.Calendar;
 
 /**
- * Created by Administrator on 2014/8/26.
+ * Created by h46incon on 2014/8/26.
  */
 public class UpdateWallPaperReceiver extends BroadcastReceiver{
 	@Override
@@ -24,7 +24,7 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 		Log.i(TAG, "Receiver a broadcast");
 
 		Log.d(TAG, "update wall paper");
-		SetWallPaper.updateWallPaper();
+		SetWallPaper.updatePaper();
 
 		boolean is_service_running = GetSPByID.getBoolean(R.string.pref_key_service_enable, false);
 		if (is_service_running) {
@@ -34,7 +34,7 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 
 	public static void startAutoUpdate()
 	{
-		SetWallPaper.updateWallPaper();
+		SetWallPaper.updatePaper();
 		setNextUpdateAlarm();
 	}
 
@@ -62,8 +62,8 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 				(AlarmManager) appContext.getSystemService(Service.ALARM_SERVICE);
 
 		// Calc next weekup time
-		long nextWeekupTime = tomorrowTimeMillis();
-//		long nextWeekupTime = System.currentTimeMillis() + 5000;
+//		long nextWeekupTime = tomorrowTimeMillis();
+		long nextWeekupTime = System.currentTimeMillis() + 5000;
 		Log.i(TAG, "setting next alarm: " + nextWeekupTime);
 		alarmManager.set(AlarmManager.RTC_WAKEUP, nextWeekupTime, pendingIntent);
 

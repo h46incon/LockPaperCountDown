@@ -26,18 +26,40 @@ public class SetWallPaper{
 		Method setLockPaperMethod = tryGetSetLockPaperMethod();
 		return setLockPaperMethod != null;
 	}
+
+	/*
+		update wallpaper or lock screen wallpaper according to shared preference's setting
+	 */
+	public static boolean updatePaper()
+	{
+		boolean isSuccess  = true;
+		boolean needUpdateWallPaper =
+				GetSPByID.getBoolean(R.string.pref_key_is_update_wallpaper, false);
+		boolean needUpdateLockPaper =
+				GetSPByID.getBoolean(R.string.pref_key_is_update_lockpaper, false);
+
+		if (needUpdateLockPaper) {
+			isSuccess &= updateLockPaper();
+		}
+		if (needUpdateWallPaper) {
+			isSuccess &= updateWallPaper();
+		}
+
+		return isSuccess;
+	}
+
 	/*
 		Warning: The function is only available for MeiZu phone, MX3 tested
 		Update lock screen's count down number
 	 */
-	public static void updateLockPaper()
+	public static boolean updateLockPaper()
 	{
 		WallpaperManager mWallManager = WallpaperManager.getInstance(MyApplication.getContext());
 		Method setLockPaperMethod = tryGetSetLockPaperMethod();
 
 		if (setLockPaperMethod == null) {
 			Log.e(TAG, "Could not get method 'setBitmapToLockWallPaper'");
-			return;
+			return false;
 		}
 
 		int countDownNumber = getCountDownNumber();
@@ -48,13 +70,16 @@ public class SetWallPaper{
 		} catch (IllegalAccessException e) {
 			e.getCause().printStackTrace();
 			e.printStackTrace();
+			return false;
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+			return false;
 		}
 
+		return true;
 	}
 
-	public static void updateWallPaper()
+	public static boolean updateWallPaper()
 	{
 		WallpaperManager mWallManager = WallpaperManager.getInstance(MyApplication.getContext());
 
@@ -65,7 +90,9 @@ public class SetWallPaper{
 			mWallManager.setBitmap(newb);
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
 	private static Method tryGetSetLockPaperMethod()
