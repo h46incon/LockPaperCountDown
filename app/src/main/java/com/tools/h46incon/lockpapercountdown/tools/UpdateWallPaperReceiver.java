@@ -15,7 +15,7 @@ import com.tools.h46incon.lockpapercountdown.util.MyApplication;
 import java.util.Calendar;
 
 /**
- * Created by Administrator on 2014/8/26.
+ * Created by h46incon on 2014/8/26.
  */
 public class UpdateWallPaperReceiver extends BroadcastReceiver{
 	@Override
@@ -24,7 +24,7 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 		Log.i(TAG, "Receiver a broadcast");
 
 		Log.d(TAG, "update wall paper");
-		SetWallPaper.updateWallPaper();
+		SetWallPaper.updatePaper();
 
 		boolean is_service_running = GetSPByID.getBoolean(R.string.pref_key_service_enable, false);
 		if (is_service_running) {
@@ -34,21 +34,30 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 
 	public static void startAutoUpdate()
 	{
-		SetWallPaper.updateWallPaper();
+		SetWallPaper.updatePaper();
 		setNextUpdateAlarm();
 	}
 
 	public static void stopAutoUpdate()
 	{
-		// TODO:
+		PendingIntent pendingIntent = getUpdaterPendingIntent();
+		AlarmManager alarmManager =
+				(AlarmManager) appContext.getSystemService(Service.ALARM_SERVICE);
+		alarmManager.cancel(pendingIntent);
+	}
+
+	private static PendingIntent getUpdaterPendingIntent()
+	{
+		Intent intent = new Intent(appContext, UpdateWallPaperReceiver.class);
+
+		final int intendID = 0x305;
+		return PendingIntent.getBroadcast(appContext, intendID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 
 	private static void setNextUpdateAlarm()
 	{
 
-		Intent intent = new Intent(appContext, UpdateWallPaperReceiver.class);
-		PendingIntent pendingIntent =
-				PendingIntent.getBroadcast(appContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = getUpdaterPendingIntent();
 		AlarmManager alarmManager =
 				(AlarmManager) appContext.getSystemService(Service.ALARM_SERVICE);
 
