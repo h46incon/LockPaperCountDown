@@ -18,9 +18,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Created by Administrator on 2014/8/26.
+ * Created by h46incon on 2014/8/26.
  */
 public class SetWallPaper{
+	public static boolean couldSetLockPaper()
+	{
+		Method setLockPaperMethod = tryGetSetLockPaperMethod();
+		return setLockPaperMethod != null;
+	}
 	/*
 		Warning: The function is only available for MeiZu phone, MX3 tested
 		Update lock screen's count down number
@@ -28,33 +33,29 @@ public class SetWallPaper{
 	public static void updateLockPaper()
 	{
 		WallpaperManager mWallManager = WallpaperManager.getInstance(MyApplication.getContext());
-		Class<?> wallPaperMangerClass = WallpaperManager.class;
+		Method setLockPaperMethod = tryGetSetLockPaperMethod();
+
+		if (setLockPaperMethod == null) {
+			Log.e(TAG, "Could not get method 'setBitmapToLockWallPaper'");
+			return;
+		}
+
+		int countDownNumber = getCountDownNumber();
+		Bitmap lockPaper = getWallPaper("" + countDownNumber, 700, 1520);
+
 		try {
-			Method setLockPaperMethod = wallPaperMangerClass.getDeclaredMethod("setBitmapToLockWallpaper", Bitmap.class);
-			setLockPaperMethod.setAccessible(true);
-
-			int countDownNumber = getCountDownNumber();
-			Bitmap lockPaper = getWallPaper("" + countDownNumber, 700, 1520);
-//			Method getLockWallpaperDesiredMinimumWidthMethod = wallPaperMangerClass.getMethod("getLockWallpaperDesiredMinimumWidth");
-//			int minWidth = (Integer)getLockWallpaperDesiredMinimumWidthMethod.invoke(mWallManager);
-//			Method getLockWallpaperDesiredMinimumHeightMethod = wallPaperMangerClass.getMethod("getlockWallpaperDesiredMinimumHeight");
-//			int minHeight = (Integer)getLockWallpaperDesiredMinimumHeightMethod.invoke(mWallManager);
-
 			setLockPaperMethod.invoke(mWallManager, lockPaper);
-
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
+		} catch (IllegalAccessException e) {
 			e.getCause().printStackTrace();
 			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public static void updateWallPaper()
 	{
-		// Test to change lock screen wallpaper
 		WallpaperManager mWallManager = WallpaperManager.getInstance(MyApplication.getContext());
 
 		int countDownNumber = getCountDownNumber();
@@ -64,6 +65,19 @@ public class SetWallPaper{
 			mWallManager.setBitmap(newb);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private static Method tryGetSetLockPaperMethod()
+	{
+		Class<?> wallPaperMangerClass = WallpaperManager.class;
+		try {
+			Method setLockPaperMethod = wallPaperMangerClass.getDeclaredMethod("setBitmapToLockWallpaper", Bitmap.class);
+			setLockPaperMethod.setAccessible(true);
+			return setLockPaperMethod;
+
+		} catch (NoSuchMethodException e) {
+			return null;
 		}
 	}
 
