@@ -36,7 +36,7 @@ public class SettingFragment extends PreferenceFragment{
 			// Disable
 			CheckBoxPreference prefSetLockPaper =
 					(CheckBoxPreference)findPreference(getString(R.string.pref_key_is_update_lockpaper));
-			prefSetLockPaper.setSummary("本系统不支持设置锁屏壁纸");
+			prefSetLockPaper.setSummary(getString(R.string.pref_s_couldnot_set_lockpaper_msg));
 			prefSetLockPaper.setChecked(false);
 			prefSetLockPaper.setEnabled(false);
 		}

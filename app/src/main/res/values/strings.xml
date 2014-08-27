@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">LockPaperCountDown</string>
+    <string name="app_name">锁屏倒计时</string>
+    <string name="pref_t_service_enable">自动更换壁纸</string>
+    <string name="pref_t_update_lockpaper">更换锁屏壁纸</string>
+    <string name="pref_t_update_wallpaper">更换主屏幕壁纸</string>
+    <string name="pref_t_destination_date">目标时间</string>
+    <string name="pref_s_couldnot_set_lockpaper_msg">本系统不支持设置锁屏壁纸</string>
+
     <string name="pref_key_service_enable">pref_service_enable</string>
     <string name="pref_key_destination_date">pref_destination_date</string>
     <string name="pref_key_is_update_wallpaper">pref_update_wallpaper</string>
