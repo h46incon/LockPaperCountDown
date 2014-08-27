@@ -16,8 +16,14 @@
             </activity>
 
         <receiver android:name="com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver"/>
+        <receiver android:name=".tools.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 
     <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 </manifest>
