@@ -2,4 +2,6 @@
     <string name="app_name">LockPaperCountDown</string>
     <string name="pref_key_service_enable">pref_service_enable</string>
     <string name="pref_key_destination_date">pref_destination_date</string>
+    <string name="pref_key_is_update_wallpaper">pref_update_wallpaper</string>
+    <string name="pref_key_is_update_lockpaper">pref_update_lockpaper</string>
 </resources>

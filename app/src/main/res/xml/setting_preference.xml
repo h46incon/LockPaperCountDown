@@ -5,6 +5,12 @@
         android:key="@string/pref_key_service_enable"
         android:title="自动更换壁纸"
         />
+    <CheckBoxPreference
+        android:key="@string/pref_key_is_update_lockpaper"
+        android:title="更换锁屏壁纸"/>
+    <CheckBoxPreference
+        android:key="@string/pref_key_is_update_wallpaper"
+        android:title="更换主屏幕壁纸"/>
     <com.tools.h46incon.lockpapercountdown.util.DatePreference
         android:key="@string/pref_key_destination_date"
         android:title="目标时间"/>
