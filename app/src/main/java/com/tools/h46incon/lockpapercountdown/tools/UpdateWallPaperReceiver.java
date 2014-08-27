@@ -62,8 +62,7 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 				(AlarmManager) appContext.getSystemService(Service.ALARM_SERVICE);
 
 		// Calc next weekup time
-//		long nextWeekupTime = tomorrowTimeMillis();
-		long nextWeekupTime = System.currentTimeMillis() + 5000;
+		long nextWeekupTime = tomorrowTimeMillis();
 		Log.i(TAG, "setting next alarm: " + nextWeekupTime);
 		alarmManager.set(AlarmManager.RTC_WAKEUP, nextWeekupTime, pendingIntent);
 
