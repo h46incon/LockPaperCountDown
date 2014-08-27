@@ -9,7 +9,6 @@ import android.util.Log;
 import com.tools.h46incon.lockpapercountdown.R;
 import com.tools.h46incon.lockpapercountdown.tools.SetWallPaper;
 import com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
-import com.tools.h46incon.lockpapercountdown.util.MyApplication;
 
 
 /**
@@ -48,23 +47,29 @@ public class SettingFragment extends PreferenceFragment{
 			@Override
 			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
 			{
-				String serviceKey =
-						MyApplication.getContext().getString(R.string.pref_key_service_enable);
-				if (serviceKey.compareTo(key) != 0) {
-					return;
+				String serviceKey = getString(R.string.pref_key_service_enable);
+				String desDateKey = getString(R.string.pref_key_destination_date);
+				boolean is_service_running = sharedPreferences.getBoolean(serviceKey, false);
+
+				if (key.compareTo(serviceKey) == 0) {
+					if (is_service_running) {
+						Log.i(TAG, "start service");
+						UpdateWallPaperReceiver.startAutoUpdate();
+					} else {
+						Log.i(TAG, "stop service");
+						UpdateWallPaperReceiver.stopAutoUpdate();
+					}
+				} else if (key.compareTo(desDateKey) == 0) {
+					// need refresh wallpaper
+					if (is_service_running) {
+						SetWallPaper.updatePaper();
+					}
 				}
 
-				boolean is_service_running = sharedPreferences.getBoolean(key, false);
-				if (is_service_running) {
-					Log.i(TAG, "start service");
-					UpdateWallPaperReceiver.startAutoUpdate();
-				} else {
-					Log.i(TAG, "stop service");
-					UpdateWallPaperReceiver.stopAutoUpdate();
-				}
 			}
 		};
 
 
 	private static final String TAG = "SettingFragment";
+
 }
