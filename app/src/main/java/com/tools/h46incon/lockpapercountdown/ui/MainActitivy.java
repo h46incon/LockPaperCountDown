@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapaercountdown.ui;
+package com.tools.h46incon.lockpapercountdown.ui;
 
 import android.app.Activity;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapaercountdown.util;
+package com.tools.h46incon.lockpapercountdown.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.DatePicker;
 
-import com.tools.h46incon.lockpapaercountdown.R;
+import com.tools.h46incon.lockpapercountdown.R;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

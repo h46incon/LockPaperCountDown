@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapaercountdown.tools;
+package com.tools.h46incon.lockpapercountdown.tools;
 
 import android.app.WallpaperManager;
 import android.graphics.Bitmap;
@@ -9,9 +9,9 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.Log;
 
-import com.tools.h46incon.lockpapaercountdown.R;
-import com.tools.h46incon.lockpapaercountdown.util.GetSPByID;
-import com.tools.h46incon.lockpapaercountdown.util.MyApplication;
+import com.tools.h46incon.lockpapercountdown.R;
+import com.tools.h46incon.lockpapercountdown.util.GetSPByID;
+import com.tools.h46incon.lockpapercountdown.util.MyApplication;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

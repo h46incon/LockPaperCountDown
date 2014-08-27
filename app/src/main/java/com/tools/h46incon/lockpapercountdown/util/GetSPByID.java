@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapaercountdown.util;
+package com.tools.h46incon.lockpapercountdown.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
