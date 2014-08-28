@@ -3,6 +3,7 @@ package com.tools.h46incon.lockpapercountdown.ui;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
@@ -33,12 +34,16 @@ public class SettingFragment extends PreferenceFragment{
 
 		// disable set lock screen paper option?
 		if (SetWallPaper.couldSetLockPaper() == false) {
-			// Disable
+			// Disable checkbox
 			CheckBoxPreference prefSetLockPaper =
 					(CheckBoxPreference)findPreference(getString(R.string.pref_key_is_update_lockpaper));
 			prefSetLockPaper.setSummary(getString(R.string.pref_s_couldnot_set_lockpaper_msg));
 			prefSetLockPaper.setChecked(false);
 			prefSetLockPaper.setEnabled(false);
+			// Disable picture selector
+			Preference prefSelectLockPaper =
+					findPreference(getString(R.string.pref_keyTag_select_lockpaper));
+			prefSelectLockPaper.setEnabled(false);
 		}
 	}
 
