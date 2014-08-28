@@ -1,0 +1,2 @@
+configurations.create("default")
+artifacts.add("default", file('android-crop-0.9.10.aar'))

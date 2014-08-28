@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':android-crop-0.9.10'

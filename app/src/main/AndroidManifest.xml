@@ -13,7 +13,9 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            </activity>
+        </activity>
+
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity"/>
 
         <receiver android:name="com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver"/>
         <receiver android:name=".tools.BootReceiver">

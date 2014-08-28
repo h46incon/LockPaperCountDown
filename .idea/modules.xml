@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LockPaperCountDown.iml" filepath="$PROJECT_DIR$/LockPaperCountDown.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-crop-0.9.10/android-crop-0.9.10.iml" filepath="$PROJECT_DIR$/android-crop-0.9.10/android-crop-0.9.10.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
