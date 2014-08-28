@@ -14,6 +14,7 @@ import com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
 import com.tools.h46incon.lockpapercountdown.util.DatePreference;
 import com.tools.h46incon.lockpapercountdown.util.GetSPByID;
 import com.tools.h46incon.lockpapercountdown.util.ListenDefaultSharedPreferenceChange;
+import com.tools.h46incon.lockpapercountdown.util.MyApplication;
 
 
 /**
@@ -84,12 +85,52 @@ public class SettingFragment extends PreferenceFragment{
 					@Override
 					public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
 					{
+						Log.d(TAG, "Destination date changed!");
 						if (isServiceRunning()) {
 							SetWallPaper.updatePaper();
 						}
 
 					}
 				}
+		);
+
+		// The common listener to handler both IsUpdate wallpaper or lockpaper setting changed.
+		SharedPreferences.OnSharedPreferenceChangeListener updatePaperPrefChangedHandler =
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+					@Override
+					public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+					{
+						boolean isEnable = sharedPreferences.getBoolean(key, false);
+						if (isEnable) {
+							Log.d(TAG, "Auto update paper enabled");
+							if (isServiceRunning()) {
+								// Try to update wallpaper
+								if (key.compareTo(
+										getString(R.string.pref_key_is_update_wallpaper)) == 0) {
+									SetWallPaper.updateWallPaper();
+								} else if (key.compareTo(
+										getString(R.string.pref_key_is_update_lockpaper)) == 0) {
+									SetWallPaper.updateLockPaper();
+								} else {
+									// error
+									Log.e(TAG, "not a updater key: " + key);
+								}
+							} else {
+								Log.d(TAG, "Will not update paper cause service is not running");
+								MyApplication.showSimpleToast(getString(R.string.msg_service_not_running));
+							}
+						}
+					}
+				};
+
+		ListenDefaultSharedPreferenceChange.registerListener(
+				getString(R.string.pref_key_is_update_wallpaper),
+				updatePaperPrefChangedHandler
+		);
+
+		ListenDefaultSharedPreferenceChange.registerListener(
+				getString(R.string.pref_key_is_update_lockpaper),
+				updatePaperPrefChangedHandler
 		);
 	}
 

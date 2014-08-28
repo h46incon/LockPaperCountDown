@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -40,6 +41,11 @@ public class MyApplication extends Application {
 			}
 		}
 		hasAppInited = true;
+	}
+
+	public static void showSimpleToast(CharSequence msg)
+	{
+		Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
 	}
 
 	public static boolean isServiceRunning(String serviceClassName)

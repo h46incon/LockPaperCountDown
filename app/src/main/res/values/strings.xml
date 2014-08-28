@@ -14,4 +14,5 @@
     <string name="pref_keyTag_select_wallpaper">pref_tag_select_wallpaper</string>
     <string name="pref_key_is_update_lockpaper">pref_update_lockpaper</string>
     <string name="pref_keyTag_select_lockpaper">pref_tag_select_lockpaper</string>
+    <string name="msg_service_not_running">服务未开启</string>
 </resources>
