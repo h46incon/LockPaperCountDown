@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 /**
  * Created by h46incon on 2014/8/26.
  */
-public class SetWallPaper{
+public class WallPaperUpdater {
 	public static class Size{
 		public int weight;
 		public int height;

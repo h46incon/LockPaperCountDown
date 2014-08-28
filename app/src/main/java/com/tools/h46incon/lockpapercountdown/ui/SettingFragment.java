@@ -9,8 +9,8 @@ import android.preference.SwitchPreference;
 import android.util.Log;
 
 import com.tools.h46incon.lockpapercountdown.R;
-import com.tools.h46incon.lockpapercountdown.tools.SetWallPaper;
 import com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
+import com.tools.h46incon.lockpapercountdown.tools.WallPaperUpdater;
 import com.tools.h46incon.lockpapercountdown.util.DatePreference;
 import com.tools.h46incon.lockpapercountdown.util.GetSPByID;
 import com.tools.h46incon.lockpapercountdown.util.ListenDefaultSharedPreferenceChange;
@@ -34,7 +34,7 @@ public class SettingFragment extends PreferenceFragment{
 	private void initPreference()
 	{
 		// disable set lock screen paper option?
-		if (SetWallPaper.couldSetLockPaper() == false) {
+		if (WallPaperUpdater.couldSetLockPaper() == false) {
 			// Disable checkbox
 			prefUpdateLockPaper.setSummary(getString(R.string.pref_s_couldnot_set_lockpaper_msg));
 			prefUpdateLockPaper.setChecked(false);
@@ -87,7 +87,7 @@ public class SettingFragment extends PreferenceFragment{
 					{
 						Log.d(TAG, "Destination date changed!");
 						if (isServiceRunning()) {
-							SetWallPaper.updatePaper();
+							WallPaperUpdater.updatePaper();
 						}
 
 					}
@@ -107,10 +107,10 @@ public class SettingFragment extends PreferenceFragment{
 								// Try to update wallpaper
 								if (key.compareTo(
 										getString(R.string.pref_key_is_update_wallpaper)) == 0) {
-									SetWallPaper.updateWallPaper();
+									WallPaperUpdater.updateWallPaper();
 								} else if (key.compareTo(
 										getString(R.string.pref_key_is_update_lockpaper)) == 0) {
-									SetWallPaper.updateLockPaper();
+									WallPaperUpdater.updateLockPaper();
 								} else {
 									// error
 									Log.e(TAG, "not a updater key: " + key);

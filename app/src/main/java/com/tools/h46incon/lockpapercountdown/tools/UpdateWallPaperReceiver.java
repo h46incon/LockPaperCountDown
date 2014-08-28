@@ -24,7 +24,7 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 		Log.i(TAG, "Receiver a broadcast");
 
 		Log.d(TAG, "update wall paper");
-		SetWallPaper.updatePaper();
+		WallPaperUpdater.updatePaper();
 
 		boolean is_service_running = GetSPByID.getBoolean(R.string.pref_key_service_enable, false);
 		if (is_service_running) {
@@ -34,7 +34,7 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 
 	public static void startAutoUpdate()
 	{
-		SetWallPaper.updatePaper();
+		WallPaperUpdater.updatePaper();
 		setNextUpdateAlarm();
 	}
 
