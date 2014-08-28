@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.util.Log;
 
 import com.tools.h46incon.lockpapercountdown.R;
 import com.tools.h46incon.lockpapercountdown.tools.SetWallPaper;
 import com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
+import com.tools.h46incon.lockpapercountdown.util.DatePreference;
 
 
 /**
@@ -21,6 +23,7 @@ public class SettingFragment extends PreferenceFragment{
 	{
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.setting_preference);
+		initPreferenceVar();
 		initPreference();
 	}
 
@@ -35,14 +38,10 @@ public class SettingFragment extends PreferenceFragment{
 		// disable set lock screen paper option?
 		if (SetWallPaper.couldSetLockPaper() == false) {
 			// Disable checkbox
-			CheckBoxPreference prefSetLockPaper =
-					(CheckBoxPreference)findPreference(getString(R.string.pref_key_is_update_lockpaper));
-			prefSetLockPaper.setSummary(getString(R.string.pref_s_couldnot_set_lockpaper_msg));
-			prefSetLockPaper.setChecked(false);
-			prefSetLockPaper.setEnabled(false);
+			prefUpdateLockPaper.setSummary(getString(R.string.pref_s_couldnot_set_lockpaper_msg));
+			prefUpdateLockPaper.setChecked(false);
+			prefUpdateLockPaper.setEnabled(false);
 			// Disable picture selector
-			Preference prefSelectLockPaper =
-					findPreference(getString(R.string.pref_keyTag_select_lockpaper));
 			prefSelectLockPaper.setEnabled(false);
 		}
 	}
@@ -74,7 +73,37 @@ public class SettingFragment extends PreferenceFragment{
 			}
 		};
 
+	private void initPreferenceVar()
+	{
+		prefServiceEnable =
+				(SwitchPreference) findPreferenceByID(R.string.pref_key_service_enable);
+		prefDestDate =
+				(DatePreference) findPreferenceByID(R.string.pref_key_destination_date);
+
+		prefUpdateLockPaper =
+				(CheckBoxPreference) findPreferenceByID(R.string.pref_key_is_update_lockpaper);
+		prefSelectLockPaper = findPreferenceByID(R.string.pref_keyTag_select_lockpaper);
+
+		prefUpdateWallPaper =
+				(CheckBoxPreference) findPreferenceByID(R.string.pref_key_is_update_wallpaper);
+		prefSelectWallPaper = findPreferenceByID(R.string.pref_keyTag_select_wallpaper);
+	}
+
+	private Preference findPreferenceByID(int stringID)
+	{
+		String keyName = getString(stringID);
+		return findPreference(keyName);
+	}
+
 
 	private static final String TAG = "SettingFragment";
+
+	// These variable will be init in initPreferenceVar()
+	private SwitchPreference prefServiceEnable;
+	private DatePreference prefDestDate;
+	private CheckBoxPreference prefUpdateLockPaper;
+	private Preference prefSelectLockPaper;
+	private CheckBoxPreference prefUpdateWallPaper;
+	private Preference prefSelectWallPaper;
 
 }
