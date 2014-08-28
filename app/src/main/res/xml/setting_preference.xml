@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:key="@string/pref_key_service_enable"
-        android:title="@string/pref_t_service_enable"
-        />
-    <CheckBoxPreference
-        android:key="@string/pref_key_is_update_lockpaper"
-        android:title="@string/pref_t_update_lockpaper"/>
-    <CheckBoxPreference
-        android:key="@string/pref_key_is_update_wallpaper"
-        android:title="@string/pref_t_update_wallpaper"/>
-    <com.tools.h46incon.lockpapercountdown.util.DatePreference
-        android:key="@string/pref_key_destination_date"
-        android:title="@string/pref_t_destination_date"/>
+    <PreferenceCategory android:title="全局设置">
+        <SwitchPreference
+            android:key="@string/pref_key_service_enable"
+            android:title="@string/pref_t_service_enable"
+            />
+        <com.tools.h46incon.lockpapercountdown.util.DatePreference
+            android:key="@string/pref_key_destination_date"
+            android:title="@string/pref_t_destination_date"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="锁屏壁纸设置">
+        <CheckBoxPreference
+            android:key="@string/pref_key_is_update_lockpaper"
+            android:title="@string/pref_t_update_lockpaper"/>
+        <Preference
+            android:key="@string/pref_keyTag_select_lockpaper"
+            android:title="@string/pref_t_paper_source"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="主屏幕壁纸设置">
+        <CheckBoxPreference
+            android:key="@string/pref_key_is_update_wallpaper"
+            android:title="@string/pref_t_update_wallpaper"/>
+        <Preference
+            android:key="@string/pref_keyTag_select_wallpaper"
+            android:title="壁纸来源"/>
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
