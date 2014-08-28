@@ -12,6 +12,8 @@ import com.tools.h46incon.lockpapercountdown.R;
 import com.tools.h46incon.lockpapercountdown.tools.SetWallPaper;
 import com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
 import com.tools.h46incon.lockpapercountdown.util.DatePreference;
+import com.tools.h46incon.lockpapercountdown.util.GetSPByID;
+import com.tools.h46incon.lockpapercountdown.util.ListenDefaultSharedPreferenceChange;
 
 
 /**
@@ -25,16 +27,11 @@ public class SettingFragment extends PreferenceFragment{
 		addPreferencesFromResource(R.xml.setting_preference);
 		initPreferenceVar();
 		initPreference();
+		registerPreferenceChangeListeners();
 	}
 
 	private void initPreference()
 	{
-		// Set preference change listener
-		SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-		sharedPreferences.registerOnSharedPreferenceChangeListener(
-				listener
-		);
-
 		// disable set lock screen paper option?
 		if (SetWallPaper.couldSetLockPaper() == false) {
 			// Disable checkbox
@@ -45,33 +42,6 @@ public class SettingFragment extends PreferenceFragment{
 			prefSelectLockPaper.setEnabled(false);
 		}
 	}
-
-	private SharedPreferences.OnSharedPreferenceChangeListener listener =
-		new SharedPreferences.OnSharedPreferenceChangeListener() {
-			@Override
-			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-			{
-				String serviceKey = getString(R.string.pref_key_service_enable);
-				String desDateKey = getString(R.string.pref_key_destination_date);
-				boolean is_service_running = sharedPreferences.getBoolean(serviceKey, false);
-
-				if (key.compareTo(serviceKey) == 0) {
-					if (is_service_running) {
-						Log.i(TAG, "start service");
-						UpdateWallPaperReceiver.startAutoUpdate();
-					} else {
-						Log.i(TAG, "stop service");
-						UpdateWallPaperReceiver.stopAutoUpdate();
-					}
-				} else if (key.compareTo(desDateKey) == 0) {
-					// need refresh wallpaper
-					if (is_service_running) {
-						SetWallPaper.updatePaper();
-					}
-				}
-
-			}
-		};
 
 	private void initPreferenceVar()
 	{
@@ -89,10 +59,49 @@ public class SettingFragment extends PreferenceFragment{
 		prefSelectWallPaper = findPreferenceByID(R.string.pref_keyTag_select_wallpaper);
 	}
 
+	private void registerPreferenceChangeListeners()
+	{
+		ListenDefaultSharedPreferenceChange.registerListener(
+				getString(R.string.pref_key_service_enable),
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+					@Override
+					public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+					{
+						if (isServiceRunning()) {
+							Log.i(TAG, "start service");
+							UpdateWallPaperReceiver.startAutoUpdate();
+						} else {
+							Log.i(TAG, "stop service");
+							UpdateWallPaperReceiver.stopAutoUpdate();
+						}
+
+					}
+				});
+
+		ListenDefaultSharedPreferenceChange.registerListener(
+				getString(R.string.pref_key_destination_date),
+				new SharedPreferences.OnSharedPreferenceChangeListener() {
+					@Override
+					public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+					{
+						if (isServiceRunning()) {
+							SetWallPaper.updatePaper();
+						}
+
+					}
+				}
+		);
+	}
+
 	private Preference findPreferenceByID(int stringID)
 	{
 		String keyName = getString(stringID);
 		return findPreference(keyName);
+	}
+
+	private boolean isServiceRunning()
+	{
+		return GetSPByID.getBoolean(R.string.pref_key_service_enable, false);
 	}
 
 
