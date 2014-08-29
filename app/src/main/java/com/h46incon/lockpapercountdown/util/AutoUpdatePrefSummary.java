@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapercountdown.util;
+package com.h46incon.lockpapercountdown.util;
 
 import android.os.Handler;
 import android.os.Looper;

@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapercountdown.tools;
+package com.h46incon.lockpapercountdown.tools;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -8,9 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.tools.h46incon.lockpapercountdown.R;
-import com.tools.h46incon.lockpapercountdown.util.GetSPByID;
-import com.tools.h46incon.lockpapercountdown.util.MyApplication;
+import com.h46incon.lockpapercountdown.R;
+import com.h46incon.lockpapercountdown.util.GetSPByID;
+import com.h46incon.lockpapercountdown.util.MyApplication;
 
 import java.util.Calendar;
 

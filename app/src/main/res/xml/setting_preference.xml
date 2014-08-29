@@ -6,7 +6,7 @@
             android:key="@string/pref_key_service_enable"
             android:title="@string/pref_t_service_enable"
             />
-        <com.tools.h46incon.lockpapercountdown.util.DatePreference
+        <com.h46incon.lockpapercountdown.util.DatePreference
             android:key="@string/pref_key_destination_date"
             android:title="@string/pref_t_destination_date"/>
     </PreferenceCategory>

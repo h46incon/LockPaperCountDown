@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapercountdown.ui;
+package com.h46incon.lockpapercountdown.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,14 +11,14 @@ import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.util.Log;
 
+import com.h46incon.lockpapercountdown.R;
+import com.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
+import com.h46incon.lockpapercountdown.tools.WallPaperUpdater;
+import com.h46incon.lockpapercountdown.util.DatePreference;
+import com.h46incon.lockpapercountdown.util.GetSPByID;
+import com.h46incon.lockpapercountdown.util.ListenDefaultSharedPreferenceChange;
+import com.h46incon.lockpapercountdown.util.MyApplication;
 import com.soundcloud.android.crop.Crop;
-import com.tools.h46incon.lockpapercountdown.R;
-import com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
-import com.tools.h46incon.lockpapercountdown.tools.WallPaperUpdater;
-import com.tools.h46incon.lockpapercountdown.util.DatePreference;
-import com.tools.h46incon.lockpapercountdown.util.GetSPByID;
-import com.tools.h46incon.lockpapercountdown.util.ListenDefaultSharedPreferenceChange;
-import com.tools.h46incon.lockpapercountdown.util.MyApplication;
 
 import java.io.File;
 
