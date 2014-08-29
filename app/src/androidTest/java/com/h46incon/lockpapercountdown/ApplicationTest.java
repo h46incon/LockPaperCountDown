@@ -1,4 +1,4 @@
-package com.tools.h46incon.lockpapercountdown;
+package com.h46incon.lockpapercountdown;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
