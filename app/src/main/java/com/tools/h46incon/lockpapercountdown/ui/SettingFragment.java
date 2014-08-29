@@ -1,6 +1,9 @@
 package com.tools.h46incon.lockpapercountdown.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -8,6 +11,7 @@ import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.util.Log;
 
+import com.soundcloud.android.crop.Crop;
 import com.tools.h46incon.lockpapercountdown.R;
 import com.tools.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
 import com.tools.h46incon.lockpapercountdown.tools.WallPaperUpdater;
@@ -15,6 +19,8 @@ import com.tools.h46incon.lockpapercountdown.util.DatePreference;
 import com.tools.h46incon.lockpapercountdown.util.GetSPByID;
 import com.tools.h46incon.lockpapercountdown.util.ListenDefaultSharedPreferenceChange;
 import com.tools.h46incon.lockpapercountdown.util.MyApplication;
+
+import java.io.File;
 
 
 /**
@@ -42,6 +48,17 @@ public class SettingFragment extends PreferenceFragment{
 			// Disable picture selector
 			prefSelectLockPaper.setEnabled(false);
 		}
+
+		prefSelectWallPaper.setOnPreferenceClickListener(
+				new Preference.OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(Preference preference)
+					{
+						onSelectWallPaper();
+						return false;
+					}
+				}
+		);
 	}
 
 	private void initPreferenceVar()
@@ -146,7 +163,52 @@ public class SettingFragment extends PreferenceFragment{
 	}
 
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		switch (requestCode) {
+			case ID_SEL_WALLPAPER:
+				if (resultCode == Activity.RESULT_OK) {
+					Uri uri = data.getData();
+					Activity parentAct = getActivity();
+					File cacheFile = new File(parentAct.getCacheDir(), "crop");
+					Uri outUri = Uri.fromFile(cacheFile);
+					Crop crop = new Crop(uri);
+					WallPaperUpdater.Size size = WallPaperUpdater.getWallPaperSize();
+					crop.output(outUri)
+							.withAspect(size.weight, size.height)
+							.withMaxSize(size.weight, size.height)
+							.start(parentAct, this, ID_CROP_WALLPAPER);
+				}
+				break;
+			case ID_CROP_WALLPAPER:
+				if (resultCode == Activity.RESULT_OK) {
+					Uri out = Crop.getOutput(data);
+					File imgFile = new File(out.getPath());
+					WallPaperUpdater.setWallPaperTemplate(imgFile);
+					// TODO: Check service running state
+					WallPaperUpdater.updateWallPaper();
+				}
+
+				break;
+			default:
+				Log.e(TAG, "unkown requestCode return: " + requestCode);
+		}
+	}
+
+
+	private void onSelectWallPaper()
+	{
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType("image/*");
+
+		startActivityForResult(intent, ID_SEL_WALLPAPER);
+	}
+
 	private static final String TAG = "SettingFragment";
+	private static final int ID_SEL_WALLPAPER = 0x305;
+	private static final int ID_CROP_WALLPAPER = 0x306;
 
 	// These variable will be init in initPreferenceVar()
 	private SwitchPreference prefServiceEnable;
