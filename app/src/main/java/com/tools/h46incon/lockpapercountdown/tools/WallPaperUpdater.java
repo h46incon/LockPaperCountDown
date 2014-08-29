@@ -17,6 +17,7 @@ import com.tools.h46incon.lockpapercountdown.R;
 import com.tools.h46incon.lockpapercountdown.util.GetSPByID;
 import com.tools.h46incon.lockpapercountdown.util.MyApplication;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -113,7 +114,11 @@ public class WallPaperUpdater {
 		}
 
 		int countDownNumber = getCountDownNumber();
-		Bitmap lockPaper = getWallPaper("" + countDownNumber, 700, 1520);
+		Bitmap template = decodeStoredImage(lockPaperFileName);
+		if (template == null) {
+			template = createEmptyBitmap(getLockPaperSize());
+		}
+		Bitmap lockPaper = drawTextInBitmap(template, "" + countDownNumber, 700, 1520);
 
 		try {
 			setLockPaperMethod.invoke(mWallManager, lockPaper);
@@ -132,7 +137,11 @@ public class WallPaperUpdater {
 	public static boolean updateWallPaper()
 	{
 		int countDownNumber = getCountDownNumber();
-		Bitmap newb = getWallPaper("" + countDownNumber, 500, 800);
+		Bitmap template = decodeStoredImage(wallPaperFileName);
+		if (template == null) {
+			template = createEmptyBitmap(getWallPaperSize());
+		}
+		Bitmap newb = drawTextInBitmap(template, "" + countDownNumber, 500, 800);
 
 		try {
 			mWallManager.setBitmap(newb);
@@ -143,11 +152,24 @@ public class WallPaperUpdater {
 		return true;
 	}
 
+	/*
+		Note: It will move {@param imageFile} !
+	 */
+	public static boolean setWallPaperTemplate(File imageFile)
+	{
+		File outFile = new File(appCont.getFilesDir(), wallPaperFileName);
+//		outFile.delete();
+		return imageFile.renameTo(outFile);
+	}
+
+
+	//================private
 	private static Method tryGetSetLockPaperMethod()
 	{
 		Class<?> wallPaperMangerClass = WallpaperManager.class;
 		try {
-			Method setLockPaperMethod = wallPaperMangerClass.getDeclaredMethod("setBitmapToLockWallpaper", Bitmap.class);
+			Method setLockPaperMethod =
+					wallPaperMangerClass.getDeclaredMethod("setBitmapToLockWallpaper", Bitmap.class);
 			setLockPaperMethod.setAccessible(true);
 			return setLockPaperMethod;
 
@@ -201,11 +223,9 @@ public class WallPaperUpdater {
 		return (int)(disTimeInMillis / millisOfDay) + 1;
 	}
 
-	private static Bitmap getWallPaper(String msgToDraw, float x, float y)
+	private static Bitmap drawTextInBitmap(Bitmap template, String msgToDraw, float x, float y)
 	{
-		Bitmap newb = getWallpaperTemplate();
-
-		Canvas canvasTmp = new Canvas(newb);
+		Canvas canvasTmp = new Canvas(template);
 		canvasTmp.drawColor(Color.TRANSPARENT);
 
 		Paint p = new Paint();
@@ -216,24 +236,43 @@ public class WallPaperUpdater {
 		canvasTmp.drawText(msgToDraw, x, y, p);
 		canvasTmp.save(Canvas.ALL_SAVE_FLAG);
 		canvasTmp.restore();
-		return newb;
+		return template;
 	}
 
-	private static Bitmap getWallpaperTemplate()
+	private static Bitmap createEmptyBitmap( Size emptySize)
 	{
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inScaled = false;
-		Bitmap templateBM = BitmapFactory.decodeResource(MyApplication.getContext().getResources(), R.drawable.lock_screen, options);
-		Log.d(TAG, "TemplateBitMap size : " + templateBM.getWidth() + " * " + templateBM.getHeight());
-
-		// new bitmap read before is immutable
-		Bitmap newb = templateBM.copy(Bitmap.Config.ARGB_8888, true);
-
-		templateBM.recycle();
-		return newb;
+		return Bitmap.createBitmap(emptySize.weight, emptySize.height, mBitMapConf);
 	}
 
+	private static Bitmap decodeStoredImage(String imgName)
+	{
+		File templateFile = getStoredFile(imgName);
+
+		if (templateFile.canRead()) {
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inScaled = false;
+			Bitmap templateBM = BitmapFactory.decodeFile(templateFile.getPath(), options);
+			Log.d(TAG, "TemplateBitMap size : " + templateBM.getWidth() + " * " + templateBM.getHeight());
+
+			// new bitmap read before is immutable
+			Bitmap newb = templateBM.copy(mBitMapConf, true);
+			templateBM.recycle();
+			return newb;
+		}
+
+		return null;
+	}
+
+	private static File getStoredFile(String fileName)
+	{
+		return new File(appCont.getFilesDir(), fileName);
+	}
+
+	private static final Bitmap.Config mBitMapConf = Bitmap.Config.ARGB_8888;
 	private static final String TAG = "SetWallPaper";
+	private static final String wallPaperFileName = "HomeScreen.jpg";
+	private static final String lockPaperFileName = "LockScreen.jpg";
+
 	private static WallpaperManager mWallManager =
 			WallpaperManager.getInstance(MyApplication.getContext());
 	private static Context appCont = MyApplication.getContext();
