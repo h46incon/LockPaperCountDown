@@ -35,6 +35,10 @@ public class SettingFragment extends PreferenceFragment{
 		initPreferenceVar();
 		initPreference();
 		registerPreferenceChangeListeners();
+
+		// Test: TextPlacerActivity
+		Intent intent = new Intent(MyApplication.getContext(), TextPlacerActivity.class);
+		startActivity(intent);
 	}
 
 	private void initPreference()

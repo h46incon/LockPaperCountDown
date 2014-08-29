@@ -16,6 +16,7 @@
         </activity>
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity"/>
+        <activity android:name=".ui.TextPlacerActivity"/>
 
         <receiver android:name="com.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver"/>
         <receiver android:name=".tools.BootReceiver">
