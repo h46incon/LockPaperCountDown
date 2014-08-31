@@ -8,13 +8,14 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.h46incon.lockpapercountdown.R;
+import com.h46incon.lockpapercountdown.ui.fontpicker.FontPickerDialog;
 
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
  * Created by h46incon on 2014/8/29.
  */
-public class TextPlacerActivity extends Activity{
+public class TextPlacerActivity extends Activity implements FontPickerDialog.FontPickerDialogListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -43,8 +44,22 @@ public class TextPlacerActivity extends Activity{
 				ambilWarnaDialog.show();
 			}
 		});
+
+		pickFontBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v)
+			{
+				mFontPickerDialog.show(getFragmentManager(), "NO_MEANING_TAG");
+			}
+		});
 	}
 
+	@Override
+	public void onFontSelected(FontPickerDialog dialog)
+	{
+		String selectedFont = dialog.getSelectedFont();
+		Log.d(TAG, "Selected Font: " + selectedFont);
+	}
 
 	private AmbilWarnaDialog.OnAmbilWarnaListener mOnColorSelected = new AmbilWarnaDialog.OnAmbilWarnaListener() {
 		@Override
@@ -61,9 +76,12 @@ public class TextPlacerActivity extends Activity{
 		}
 	};
 
+	FontPickerDialog mFontPickerDialog = new FontPickerDialog();
+
 	Button pickColorBtn;
 	Button pickFontBtn;
 
 	private final String TAG = "TextPlacerActivity";
 	private int selectedColor = 0xFFFF0000;     // Init selected color as RED
+
 }
