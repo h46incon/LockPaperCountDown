@@ -10,7 +10,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -98,17 +98,9 @@ public class FontPickerDialog extends DialogFragment {
 		// Instantiate an AlertDialog.Builder with its constructor
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-		// Get the layout inflater
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-
-		// Inflate and set the layout for the dialog
-		// Pass null as the parent view because its going in the dialog layout
-		builder.setView(inflater.inflate(R.layout.font_picker_dialog, null));
-
 		// set adapter to show fonts
 		FontAdapter adapter = new FontAdapter(mContext);
 		builder.setAdapter(adapter, new OnClickListener() {
-
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
 				int magicNumber = arg1;
@@ -117,7 +109,7 @@ public class FontPickerDialog extends DialogFragment {
 			}
 		});
 
-		builder.setTitle("Select A Font");
+		//builder.setTitle("Select A Font");
 
 		// Add the buttons
 		builder.setNegativeButton(R.string.cancel,
@@ -187,6 +179,11 @@ public class FontPickerDialog extends DialogFragment {
 			Typeface tface = Typeface.createFromFile(mFontPaths.get(position));
 			view.setTypeface(tface);
 			view.setText(mFontNames.get(position));
+			view.setGravity(Gravity.CENTER_VERTICAL);
+			view.setPadding(20,0,20,0);
+			view.setLines(1);
+			view.setTextSize(20);
+			view.setMinHeight(100);
 
 			return view;
 
