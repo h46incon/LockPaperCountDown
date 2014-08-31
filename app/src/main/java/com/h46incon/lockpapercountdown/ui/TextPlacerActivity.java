@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 
 import com.h46incon.lockpapercountdown.R;
@@ -18,6 +19,7 @@ public class TextPlacerActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.acivity_textplacer);
 		initViewVar();
 		initListener();
