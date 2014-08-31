@@ -198,7 +198,10 @@ public class FontPickerDialog extends DialogFragment {
 			// Set text to be font name and written in font style
 			Typeface tface = Typeface.createFromFile(mFontPaths.get(position));
 			view.setTypeface(tface);
-			view.setText(mFontNames.get(position));
+			String fontName = mFontNames.get(position);
+			// add number prefix. It can preview number's font.
+			String textToShow = String.format("%02d. %s", position, fontName);
+			view.setText(textToShow);
 
 			// Set style
 			view.setGravity(Gravity.CENTER_VERTICAL);
