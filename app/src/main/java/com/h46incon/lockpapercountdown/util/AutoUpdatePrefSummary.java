@@ -46,7 +46,7 @@ public class AutoUpdatePrefSummary {
 		if (templateID == 0) {
 			template = null;
 		} else {
-			template = MyApplication.getContext().getString(templateID);
+			template = MyApp.getContext().getString(templateID);
 		}
 
 		return addAutoUpdate(pref, template, cb);
@@ -66,7 +66,7 @@ public class AutoUpdatePrefSummary {
 			}
 		} else {
 			String key = pref.getKey();
-			msg = MyApplication.getSharedPreferences().getString(key, "");
+			msg = MyApp.getSharedPreferences().getString(key, "");
 		}
 
 		return msg;

@@ -41,12 +41,12 @@ public class ListenDefaultSharedPreferenceChange {
 	//=============== private
 	private ListenDefaultSharedPreferenceChange() { }
 
-	private static Context appCont = MyApplication.getContext();
+	private static Context appCont = MyApp.getContext();
 	private static HashMap<String, List<OnSharedPreferenceChangeListener>> keyHandlerMap =
 			new HashMap<String, List<OnSharedPreferenceChangeListener>>();
 
 	private static SharedPreferences sharedPreferences =
-			MyApplication.getSharedPreferences();
+			MyApp.getSharedPreferences();
 
 	private static OnSharedPreferenceChangeListener mListener =
 			new OnSharedPreferenceChangeListener() {

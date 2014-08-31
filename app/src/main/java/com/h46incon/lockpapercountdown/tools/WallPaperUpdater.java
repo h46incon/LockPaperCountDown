@@ -15,7 +15,7 @@ import android.view.WindowManager;
 
 import com.h46incon.lockpapercountdown.R;
 import com.h46incon.lockpapercountdown.util.GetSPByID;
-import com.h46incon.lockpapercountdown.util.MyApplication;
+import com.h46incon.lockpapercountdown.util.MyApp;
 
 import java.io.File;
 import java.io.IOException;
@@ -274,7 +274,7 @@ public class WallPaperUpdater {
 	private static final String lockPaperFileName = "LockScreen.jpg";
 
 	private static WallpaperManager mWallManager =
-			WallpaperManager.getInstance(MyApplication.getContext());
-	private static Context appCont = MyApplication.getContext();
+			WallpaperManager.getInstance(MyApp.getContext());
+	private static Context appCont = MyApp.getContext();
 
 }

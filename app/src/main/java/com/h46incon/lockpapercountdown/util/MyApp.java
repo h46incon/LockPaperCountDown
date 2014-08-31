@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2014/4/11.
  */
-public class MyApplication extends Application {
+public class MyApp extends Application {
 
 	public static void addOnAppInitCallBack(Runnable runnable)
 	{
@@ -73,7 +73,7 @@ public class MyApplication extends Application {
 		return sharedPreferences;
 	}
 
-	private static MyApplication instance;
+	private static MyApp instance;
 	private static Context applicationContext;
 	private static SharedPreferences sharedPreferences;
 

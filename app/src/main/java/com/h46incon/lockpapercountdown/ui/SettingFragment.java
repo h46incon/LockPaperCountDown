@@ -17,7 +17,7 @@ import com.h46incon.lockpapercountdown.tools.WallPaperUpdater;
 import com.h46incon.lockpapercountdown.util.DatePreference;
 import com.h46incon.lockpapercountdown.util.GetSPByID;
 import com.h46incon.lockpapercountdown.util.ListenDefaultSharedPreferenceChange;
-import com.h46incon.lockpapercountdown.util.MyApplication;
+import com.h46incon.lockpapercountdown.util.MyApp;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class SettingFragment extends PreferenceFragment{
 		registerPreferenceChangeListeners();
 
 		// Test: TextPlacerActivity
-		Intent intent = new Intent(MyApplication.getContext(), TextPlacerActivity.class);
+		Intent intent = new Intent(MyApp.getContext(), TextPlacerActivity.class);
 		startActivity(intent);
 	}
 
@@ -138,7 +138,7 @@ public class SettingFragment extends PreferenceFragment{
 								}
 							} else {
 								Log.d(TAG, "Will not update paper cause service is not running");
-								MyApplication.showSimpleToast(getString(R.string.msg_service_not_running));
+								MyApp.showSimpleToast(getString(R.string.msg_service_not_running));
 							}
 						}
 					}

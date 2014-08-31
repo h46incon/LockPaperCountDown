@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.h46incon.lockpapercountdown.R;
 import com.h46incon.lockpapercountdown.util.GetSPByID;
-import com.h46incon.lockpapercountdown.util.MyApplication;
+import com.h46incon.lockpapercountdown.util.MyApp;
 
 import java.util.Calendar;
 
@@ -86,5 +86,5 @@ public class UpdateWallPaperReceiver extends BroadcastReceiver{
 	}
 
 	private static final String TAG = "UpdateReceiver";
-	private static Context appContext = MyApplication.getContext();
+	private static Context appContext = MyApp.getContext();
 }
