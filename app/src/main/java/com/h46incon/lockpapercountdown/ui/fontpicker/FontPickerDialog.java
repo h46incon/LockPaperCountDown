@@ -8,8 +8,11 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,7 @@ import java.util.List;
 
 /** This class provides a dialog to choose a font.
  *
+ * Improve UI by h46incon
  * The dialog was built with inspiration from the
  * FontPreference class made by George Yunaev under
  * Apache 2.0 and found at <p>
@@ -49,6 +53,7 @@ public class FontPickerDialog extends DialogFragment {
 	private List<String> mFontPaths; // list of file paths for the available fonts
 	private List<String> mFontNames; // font names of the available fonts. These indices match up with mFontPaths
 	private Context mContext; // The calling activities context.
+	private DisplayMetrics displayMetrics; // display metrics, use to convert dip to pix and so on.
 	private String mSelectedFont; // The font that was selected
 	// create callback method to bass back the selected font
 	public interface FontPickerDialogListener {
@@ -83,6 +88,10 @@ public class FontPickerDialog extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// get context
 		mContext = getActivity();
+
+		// get display metrics
+		Resources resources = getResources();
+		displayMetrics = resources.getDisplayMetrics();
 
 		// Let FontManager find available fonts
 		HashMap<String, String> fonts = FontManager.enumerateFonts();
@@ -140,6 +149,17 @@ public class FontPickerDialog extends DialogFragment {
 	 */
 	private class FontAdapter extends BaseAdapter {
 		private Context mContext;
+		// view's style
+		private final float paddingDP = 20;     // Left and right padding in a view
+		private final float textSize = 20;      // Use a bigger font's size
+		// Use min height to make echo view have the same height in most case
+		// Use the unit with SP to make this height relate to font size
+		private final float minHeightSP = 50;
+
+		// convert value to pixel value
+		private final int paddingPX = dpToPix(paddingDP);
+		private final int minHeightPX = spToPix(minHeightSP);
+
 
 		public FontAdapter(Context c) {
 			mContext = c;
@@ -179,14 +199,28 @@ public class FontPickerDialog extends DialogFragment {
 			Typeface tface = Typeface.createFromFile(mFontPaths.get(position));
 			view.setTypeface(tface);
 			view.setText(mFontNames.get(position));
+
+			// Set style
 			view.setGravity(Gravity.CENTER_VERTICAL);
-			view.setPadding(20,0,20,0);
 			view.setLines(1);
-			view.setTextSize(20);
-			view.setMinHeight(100);
+			view.setPadding(paddingPX, 0, paddingPX, 0);
+			view.setTextSize(textSize);
+			view.setMinHeight(minHeightPX);
 
 			return view;
 
 		}
+	}
+
+	private int dpToPix(float dp)
+	{
+		return (int)TypedValue.applyDimension(
+				TypedValue.COMPLEX_UNIT_DIP, dp, displayMetrics);
+	}
+
+	private int spToPix(float dp)
+	{
+		return (int)TypedValue.applyDimension(
+				TypedValue.COMPLEX_UNIT_SP, dp, displayMetrics);
 	}
 }
