@@ -171,30 +171,37 @@ public class SettingFragment extends PreferenceFragment{
 			case ID_SEL_WALLPAPER:
 				if (resultCode == Activity.RESULT_OK) {
 					Uri uri = data.getData();
-					// Test: TextPlacerActivity
-					Intent intent = new Intent(MyApp.getContext(), TextPlacerActivity.class);
-					intent.setData(uri);
-					startActivity(intent);
-//					Activity parentAct = getActivity();
-//					File cacheFile = new File(parentAct.getCacheDir(), "crop");
-//					Uri outUri = Uri.fromFile(cacheFile);
-//					Crop crop = new Crop(uri);
-//					WallPaperUpdater.Size size = WallPaperUpdater.getWallPaperSize();
-//					crop.output(outUri)
-//							.withAspect(size.weight, size.height)
-//							.withMaxSize(size.weight, size.height)
-//							.start(parentAct, this, ID_CROP_WALLPAPER);
+					Activity parentAct = getActivity();
+					File cacheFile = new File(parentAct.getCacheDir(), "crop");
+					Uri outUri = Uri.fromFile(cacheFile);
+					Crop crop = new Crop(uri);
+					WallPaperUpdater.Size size = WallPaperUpdater.getWallPaperSize();
+					crop.output(outUri)
+							.withAspect(size.weight, size.height)
+							.withMaxSize(size.weight, size.height)
+							.start(parentAct, this, ID_CROP_WALLPAPER);
 				}
 				break;
 			case ID_CROP_WALLPAPER:
 				if (resultCode == Activity.RESULT_OK) {
 					Uri out = Crop.getOutput(data);
-					File imgFile = new File(out.getPath());
-					WallPaperUpdater.setWallPaperTemplate(imgFile);
-					// TODO: Check service running state
-					WallPaperUpdater.updateWallPaper();
+					// Test: TextPlacerActivity
+					Intent intent = new Intent(MyApp.getContext(), TextPlacerActivity.class);
+					intent.setData(out);
+					startActivityForResult(intent, ID_PLACER_WALLPAPER);
 				}
 
+				break;
+			case ID_PLACER_WALLPAPER:
+				if (resultCode == Activity.RESULT_OK) {
+					Log.d(TAG, "placer ok");
+					float fontSize = data.getFloatExtra(TextPlacerActivity.Extra.FontSize, 0f);
+					Log.d(TAG, "font Size: " + fontSize);
+//					File imgFile = new File(out.getPath());
+//					WallPaperUpdater.setWallPaperTemplate(imgFile);
+					// TODO: Check service running state
+//					WallPaperUpdater.updateWallPaper();
+				}
 				break;
 			default:
 				Log.e(TAG, "unkown requestCode return: " + requestCode);
@@ -214,6 +221,7 @@ public class SettingFragment extends PreferenceFragment{
 	private static final String TAG = "SettingFragment";
 	private static final int ID_SEL_WALLPAPER = 0x305;
 	private static final int ID_CROP_WALLPAPER = 0x306;
+	private static final int ID_PLACER_WALLPAPER = 0x307;
 
 	// These variable will be init in initPreferenceVar()
 	private SwitchPreference prefServiceEnable;
