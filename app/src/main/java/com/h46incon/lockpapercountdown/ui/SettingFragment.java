@@ -36,9 +36,6 @@ public class SettingFragment extends PreferenceFragment{
 		initPreference();
 		registerPreferenceChangeListeners();
 
-		// Test: TextPlacerActivity
-		Intent intent = new Intent(MyApp.getContext(), TextPlacerActivity.class);
-		startActivity(intent);
 	}
 
 	private void initPreference()
@@ -174,15 +171,19 @@ public class SettingFragment extends PreferenceFragment{
 			case ID_SEL_WALLPAPER:
 				if (resultCode == Activity.RESULT_OK) {
 					Uri uri = data.getData();
-					Activity parentAct = getActivity();
-					File cacheFile = new File(parentAct.getCacheDir(), "crop");
-					Uri outUri = Uri.fromFile(cacheFile);
-					Crop crop = new Crop(uri);
-					WallPaperUpdater.Size size = WallPaperUpdater.getWallPaperSize();
-					crop.output(outUri)
-							.withAspect(size.weight, size.height)
-							.withMaxSize(size.weight, size.height)
-							.start(parentAct, this, ID_CROP_WALLPAPER);
+					// Test: TextPlacerActivity
+					Intent intent = new Intent(MyApp.getContext(), TextPlacerActivity.class);
+					intent.setData(uri);
+					startActivity(intent);
+//					Activity parentAct = getActivity();
+//					File cacheFile = new File(parentAct.getCacheDir(), "crop");
+//					Uri outUri = Uri.fromFile(cacheFile);
+//					Crop crop = new Crop(uri);
+//					WallPaperUpdater.Size size = WallPaperUpdater.getWallPaperSize();
+//					crop.output(outUri)
+//							.withAspect(size.weight, size.height)
+//							.withMaxSize(size.weight, size.height)
+//							.start(parentAct, this, ID_CROP_WALLPAPER);
 				}
 				break;
 			case ID_CROP_WALLPAPER:
