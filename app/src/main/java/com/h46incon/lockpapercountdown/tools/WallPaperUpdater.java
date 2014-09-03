@@ -2,12 +2,14 @@ package com.h46incon.lockpapercountdown.tools;
 
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -17,8 +19,13 @@ import com.h46incon.lockpapercountdown.R;
 import com.h46incon.lockpapercountdown.util.GetSPByID;
 import com.h46incon.lockpapercountdown.util.MyApp;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -29,6 +36,43 @@ public class WallPaperUpdater {
 	public static class Size{
 		public int weight;
 		public int height;
+	}
+
+	public static class TextParam implements Serializable{
+		public String toBase64()
+		{
+			try {
+				ByteArrayOutputStream byteOS = new ByteArrayOutputStream();
+				ObjectOutputStream objectOS = new ObjectOutputStream(byteOS);
+				objectOS.writeObject(this);
+				return Base64.encodeToString(byteOS.toByteArray(), Base64.DEFAULT);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
+		public static TextParam fromBase64(final String str)
+		{
+			byte[] bytes = Base64.decode(str, Base64.DEFAULT);
+			ByteArrayInputStream byteIS = new ByteArrayInputStream(bytes);
+			try {
+				ObjectInputStream objetcIS = new ObjectInputStream(byteIS);
+				return (TextParam) objetcIS.readObject();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		public String fontPath; //null or "" to set Default font type
+		public float textSize;  // sp, may be change to px later.
+		public float xCenter;
+		public float baseLine;
+		public int color;
 	}
 
 	public static boolean couldSetLockPaper()
@@ -118,7 +162,13 @@ public class WallPaperUpdater {
 		if (template == null) {
 			template = createEmptyBitmap(getLockPaperSize());
 		}
-		Bitmap lockPaper = drawTextInBitmap(template, "" + countDownNumber, 700, 1520);
+
+		TextParam textParam = readTextParam(lockTextParamSPKey);
+		if (textParam == null) {
+			textParam = createDefaultTextParam(template);
+		}
+
+		Bitmap lockPaper = drawTextInBitmap(template, "" + countDownNumber, textParam);
 
 		try {
 			setLockPaperMethod.invoke(mWallManager, lockPaper);
@@ -141,7 +191,13 @@ public class WallPaperUpdater {
 		if (template == null) {
 			template = createEmptyBitmap(getWallPaperSize());
 		}
-		Bitmap newb = drawTextInBitmap(template, "" + countDownNumber, 500, 800);
+
+		TextParam textParam = readTextParam(wallTextParamSPKey);
+		if (textParam == null) {
+			textParam = createDefaultTextParam(template);
+		}
+
+		Bitmap newb = drawTextInBitmap(template, "" + countDownNumber, textParam);
 
 		try {
 			mWallManager.setBitmap(newb);
@@ -162,8 +218,45 @@ public class WallPaperUpdater {
 		return imageFile.renameTo(outFile);
 	}
 
+	public static void setWallPaperTextParam(TextParam param)
+	{
+		storeTextParam(param, wallTextParamSPKey);
+	}
+
+	/*
+		Note: It will move {@param imageFile} !
+	 */
+	public static boolean setLockPaperTemplate(File imageFile)
+	{
+		File outFile = new File(appCont.getFilesDir(), lockPaperFileName);
+//		outFile.delete();
+		return imageFile.renameTo(outFile);
+	}
+
+	public static void setLockPaperTextParam(TextParam param)
+	{
+		storeTextParam(param, lockTextParamSPKey);
+	}
 
 	//================private
+	private static void storeTextParam(TextParam param, String key)
+	{
+		String base64 =param.toBase64();
+		SharedPreferences.Editor edit = defaultSP.edit();
+		edit.putString(key, base64);
+		edit.commit();
+	}
+
+	private static TextParam readTextParam(String key)
+	{
+		String str = defaultSP.getString(key, null);
+		if (str == null) {
+			return null;
+		}
+
+		return TextParam.fromBase64(str);
+	}
+
 	private static Method tryGetSetLockPaperMethod()
 	{
 		Class<?> wallPaperMangerClass = WallpaperManager.class;
@@ -223,20 +316,39 @@ public class WallPaperUpdater {
 		return (int)(disTimeInMillis / millisOfDay) + 1;
 	}
 
-	private static Bitmap drawTextInBitmap(Bitmap template, String msgToDraw, float x, float y)
+	private static Bitmap drawTextInBitmap(Bitmap template, String msgToDraw, TextParam param)
 	{
 		Canvas canvasTmp = new Canvas(template);
-		canvasTmp.drawColor(Color.TRANSPARENT);
 
 		Paint p = new Paint();
-		Typeface font = Typeface.create("Arial", Typeface.BOLD);
-		p.setColor(Color.RED);
+		Typeface font = Typeface.DEFAULT;
+		if (param.fontPath != null
+				&& !param.fontPath.isEmpty()) {
+			font = Typeface.createFromFile(param.fontPath);
+		}
+
+		p.setColor(param.color);
 		p.setTypeface(font);
-		p.setTextSize(150);
-		canvasTmp.drawText(msgToDraw, x, y, p);
+		p.setTextSize(param.textSize);
+		p.setTextAlign(Paint.Align.CENTER);
+
+		canvasTmp.drawText(msgToDraw, param.xCenter, param.baseLine, p);
 		canvasTmp.save(Canvas.ALL_SAVE_FLAG);
 		canvasTmp.restore();
 		return template;
+	}
+
+	private static TextParam createDefaultTextParam(Bitmap template)
+	{
+		TextParam param = new TextParam();
+		param.fontPath = null;
+		param.color = Color.RED;
+		param.baseLine = template.getHeight() / 2;
+		param.xCenter = template.getWidth() / 2;
+		// TODO:
+		param.textSize = 100f;
+
+		return param;
 	}
 
 	private static Bitmap createEmptyBitmap( Size emptySize)
@@ -268,13 +380,19 @@ public class WallPaperUpdater {
 		return new File(appCont.getFilesDir(), fileName);
 	}
 
+	private static WallpaperManager mWallManager =
+			WallpaperManager.getInstance(MyApp.getContext());
+	private static Context appCont = MyApp.getContext();
+	private static SharedPreferences defaultSP = MyApp.getSharedPreferences();
+
 	private static final Bitmap.Config mBitMapConf = Bitmap.Config.ARGB_8888;
 	private static final String TAG = "SetWallPaper";
 	private static final String wallPaperFileName = "HomeScreen.jpg";
 	private static final String lockPaperFileName = "LockScreen.jpg";
+	private static final String wallTextParamSPKey =
+			appCont.getString(R.string.pref_key_wallpaper_text_param);
+	private static final String lockTextParamSPKey =
+			appCont.getString(R.string.pref_key_lockpaper_text_param);
 
-	private static WallpaperManager mWallManager =
-			WallpaperManager.getInstance(MyApp.getContext());
-	private static Context appCont = MyApp.getContext();
 
 }

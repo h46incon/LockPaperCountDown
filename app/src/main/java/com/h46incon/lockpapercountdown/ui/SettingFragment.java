@@ -195,12 +195,20 @@ public class SettingFragment extends PreferenceFragment{
 			case ID_PLACER_WALLPAPER:
 				if (resultCode == Activity.RESULT_OK) {
 					Log.d(TAG, "placer ok");
-					float fontSize = data.getFloatExtra(TextPlacerActivity.Extra.FontSize, 0f);
-					Log.d(TAG, "font Size: " + fontSize);
-//					File imgFile = new File(out.getPath());
-//					WallPaperUpdater.setWallPaperTemplate(imgFile);
+					WallPaperUpdater.TextParam param = new WallPaperUpdater.TextParam();
+					param.textSize = data.getFloatExtra(TextPlacerActivity.Extra.FontSize, 0f);
+					param.fontPath = data.getStringExtra(TextPlacerActivity.Extra.FontPath);
+					param.xCenter = data.getFloatExtra(TextPlacerActivity.Extra.FontCenterX, 0f);
+					param.baseLine = data.getFloatExtra(TextPlacerActivity.Extra.FontBaseLine, 0f);
+					param.color = data.getIntExtra(TextPlacerActivity.Extra.Color, 0);
+
+					File imgFile = new File(data.getData().getPath());
+					WallPaperUpdater.setWallPaperTextParam(param);
+					WallPaperUpdater.setWallPaperTemplate(imgFile);
+
 					// TODO: Check service running state
-//					WallPaperUpdater.updateWallPaper();
+					WallPaperUpdater.updateWallPaper();
+
 				}
 				break;
 			default:
