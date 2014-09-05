@@ -55,6 +55,8 @@ public class FontPickerDialog extends DialogFragment {
 	private Context mContext; // The calling activities context.
 	private DisplayMetrics displayMetrics; // display metrics, use to convert dip to pix and so on.
 	private String mSelectedFont; // The font that was selected
+	private String mSelectedFoneName;  // The font name that was selected
+
 	// create callback method to bass back the selected font
 	public interface FontPickerDialogListener {
 		/** This method is called when a font is selected
@@ -114,6 +116,7 @@ public class FontPickerDialog extends DialogFragment {
 			public void onClick(DialogInterface arg0, int arg1) {
 				int magicNumber = arg1;
 				mSelectedFont = mFontPaths.get(magicNumber);
+				mSelectedFoneName = mFontNames.get(magicNumber);
 				mListener.onFontSelected(FontPickerDialog.this);
 			}
 		});
@@ -141,6 +144,14 @@ public class FontPickerDialog extends DialogFragment {
 	 */
 	public String getSelectedFont(){
 		return mSelectedFont;
+	}
+
+	/** Callback method that that is called once a font has been
+	 * selected and the fontpickerdialog closes.
+	 * @return The font name of the font that was selected
+	 */
+	public String getSelectedFontName(){
+		return mSelectedFoneName;
 	}
 
 	/** Create an adapter to show the fonts in the dialog.
