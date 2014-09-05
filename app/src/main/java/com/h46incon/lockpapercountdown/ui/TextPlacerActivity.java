@@ -8,12 +8,14 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
 import com.h46incon.lockpapercountdown.R;
 import com.h46incon.lockpapercountdown.ui.fontpicker.FontPickerDialog;
+import com.h46incon.lockpapercountdown.util.MyApp;
 import com.soundcloud.android.crop.CropImageView;
 import com.soundcloud.android.crop.HighlightView;
 import com.soundcloud.android.crop.ImageAreaPickerActivity;
@@ -178,6 +180,10 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 		downCancelBar = findViewById(R.id.done_cancel_bar);
 		downBtn = downCancelBar.findViewById(R.id.btn_done);
 		cancelBtn =  downCancelBar.findViewById(R.id.btn_cancel);
+
+		float txSizePX = pickFontBtn.getTextSize();
+		normalPickBtnTextSize = MyApp.PxToTypedValue(TypedValue.COMPLEX_UNIT_SP, txSizePX);
+		minPickBtnTextSize = normalPickBtnTextSize / 2f;
 	}
 
 	private void initListener()
@@ -224,9 +230,13 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 	public void onFontSelected(FontPickerDialog dialog)
 	{
 		String selectedFont = dialog.getSelectedFont();
+		String fontName = dialog.getSelectedFontName();
+
 		Log.d(TAG, "Selected Font: " + selectedFont);
 		fontPath = selectedFont;
 		mTypeface = Typeface.createFromFile(selectedFont);
+		ChangePickFontBtnText(fontName);
+
 		restartPicker();
 	}
 
@@ -282,6 +292,34 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 		return intent;
 	}
 
+	private void ChangePickFontBtnText(String str)
+	{
+		Log.d(TAG, "Btn text: " + str);
+		float width = pickFontBtn.getWidth() -
+				pickFontBtn.getPaddingLeft() - pickFontBtn.getPaddingRight();
+
+		// Measure text width in normal text size
+		Paint paint = new Paint();
+		paint.setTypeface(mTypeface);
+		paint.setTextSize(
+				MyApp.typedValueToPx(TypedValue.COMPLEX_UNIT_SP, normalPickBtnTextSize));
+		float normalLen = paint.measureText(str);
+
+		// Need a smaller size?
+		float rSize;
+		if (normalLen < width) {
+			rSize = normalPickBtnTextSize;
+		} else {
+			// try a smaller size
+			float ratio = width / normalLen;
+			rSize = Math.max(minPickBtnTextSize, normalPickBtnTextSize * ratio);
+		}
+
+		pickFontBtn.setTextSize(rSize);
+		pickFontBtn.setTypeface(mTypeface);
+		pickFontBtn.setText(str);
+	}
+
 	private static class FontInfo {
 		public float xCenter = Float.NaN;
 		public float baseLine = Float.NaN;
@@ -313,6 +351,8 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 	View downBtn;
 	View cancelBtn;
 
+	private float normalPickBtnTextSize;
+	private float minPickBtnTextSize;
 	private Paint.Align textAlign = Paint.Align.CENTER;
 	private Typeface mTypeface = Typeface.DEFAULT;
 	private String fontPath = "";
