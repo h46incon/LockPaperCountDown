@@ -83,7 +83,7 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 					(float) newImageA.left / rawWidth,
 					(float) newImageA.top / rawHeight,
 					(float) newImageA.right / rawWidth,
-					(float) newImageA.bottom / rawWidth
+					(float) newImageA.bottom / rawHeight
 			);
 		}
 
@@ -95,6 +95,7 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 		v.setNeedCenterBaseOnThis(false);
 		v.setEnsureVisable(false);
 		v.setMustInsideImage(false);
+		v.setHandleMode(HighlightView.HandleMode.Always);
 
 		v.setOnDrawFinshed(new HighlightView.OnDrawFinished() {
 			@Override
@@ -317,7 +318,8 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 	private String fontPath = "";
 	private float textRefSize;
 	private Rect textRefBound;
-	private String textToShow = "text-g";
+//	private String textToShow = "text-g";
+	private String textToShow = "24";
 
 	private CropImageView imageView;
 	private final String TAG = "TextPlacerActivity";
