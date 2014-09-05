@@ -216,7 +216,7 @@ public class FontPickerDialog extends DialogFragment {
 
 			// Set style
 			view.setGravity(Gravity.CENTER_VERTICAL);
-			view.setLines(1);
+			view.setSingleLine();
 			view.setPadding(paddingPX, 0, paddingPX, 0);
 			view.setTextSize(textSize);
 			view.setMinHeight(minHeightPX);
