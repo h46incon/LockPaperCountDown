@@ -19,4 +19,5 @@
 
     <string name="msg_service_not_running">服务未开启</string>
     <string name="cancel">Cancel</string>
+    <string name="placer__bar_fontbtn_text">字体</string>
 </resources>

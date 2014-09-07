@@ -7,9 +7,9 @@
 
 
     <solid
-        android:color="#202020"/>
+        android:color="#2E2E2E"/>
     <stroke
-        android:color="#FFFFFF"
+        android:color="#656565"
         android:width="2px"
         />
 
