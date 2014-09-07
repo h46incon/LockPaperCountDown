@@ -174,7 +174,7 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 
 	private void initViewVar()
 	{
-		pickColorBtn = (Button) findViewById(R.id.pick_color_btn);
+		pickColorBtn = (ColorButton) findViewById(R.id.pick_color_btn);
 		pickFontBtn = (Button) findViewById(R.id.pick_font_btn);
 		imageView = (CropImageView) findViewById(R.id.placer_image_view);
 		downCancelBar = findViewById(R.id.done_cancel_bar);
@@ -184,10 +184,12 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 		float txSizePX = pickFontBtn.getTextSize();
 		normalPickBtnTextSize = MyApp.PxToTypedValue(TypedValue.COMPLEX_UNIT_SP, txSizePX);
 		minPickBtnTextSize = normalPickBtnTextSize / 2f;
+
 	}
 
 	private void initListener()
 	{
+		pickColorBtn.setInnerColor(selectedColor);
 		pickColorBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v)
@@ -339,13 +341,14 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 		{
 			selectedColor = color;
 			Log.d(TAG, "Select color" + color);
+			pickColorBtn.setInnerColor(selectedColor);
 			imageView.invalidate();
 		}
 	};
 
 	FontPickerDialog mFontPickerDialog = new FontPickerDialog();
 
-	Button pickColorBtn;
+	ColorButton pickColorBtn;
 	Button pickFontBtn;
 	View downCancelBar;
 	View downBtn;
