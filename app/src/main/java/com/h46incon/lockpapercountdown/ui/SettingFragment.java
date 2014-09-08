@@ -1,9 +1,7 @@
 package com.h46incon.lockpapercountdown.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -13,14 +11,12 @@ import android.util.Log;
 
 import com.h46incon.lockpapercountdown.R;
 import com.h46incon.lockpapercountdown.tools.UpdateWallPaperReceiver;
+import com.h46incon.lockpapercountdown.tools.WallPaperPicker;
 import com.h46incon.lockpapercountdown.tools.WallPaperUpdater;
 import com.h46incon.lockpapercountdown.util.DatePreference;
 import com.h46incon.lockpapercountdown.util.GetSPByID;
 import com.h46incon.lockpapercountdown.util.ListenDefaultSharedPreferenceChange;
 import com.h46incon.lockpapercountdown.util.MyApp;
-import com.soundcloud.android.crop.Crop;
-
-import java.io.File;
 
 
 /**
@@ -32,6 +28,9 @@ public class SettingFragment extends PreferenceFragment{
 	{
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.setting_preference);
+
+		wallPaperPicker = new WallPaperPicker(this);
+
 		initPreferenceVar();
 		initPreference();
 		registerPreferenceChangeListeners();
@@ -55,7 +54,7 @@ public class SettingFragment extends PreferenceFragment{
 					@Override
 					public boolean onPreferenceClick(Preference preference)
 					{
-						onSelectPaperBtnClick(ID_SEL_WALLPAPER);
+						wallPaperPicker.startFromPicker(WallPaperPicker.PaperType.WALL_PAPER_ROLL);
 						return false;
 					}
 				}
@@ -66,7 +65,7 @@ public class SettingFragment extends PreferenceFragment{
 					@Override
 					public boolean onPreferenceClick(Preference preference)
 					{
-						onSelectPaperBtnClick(ID_SEL_LOCKPAPER);
+						wallPaperPicker.startFromPicker(WallPaperPicker.PaperType.LOCK_PAPER);
 						return false;
 					}
 				}
@@ -179,107 +178,14 @@ public class SettingFragment extends PreferenceFragment{
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		switch (requestCode) {
-			case ID_SEL_WALLPAPER:
-				onImageSelected(resultCode, data,
-						WallPaperUpdater.getWallPaperSize(), ID_CROP_WALLPAPER);
-				break;
-
-			case ID_SEL_LOCKPAPER:
-				onImageSelected(resultCode, data,
-						WallPaperUpdater.getLockPaperSize(), ID_CROP_LOCKPAPER);
-				break;
-
-			case ID_CROP_WALLPAPER:
-				onImageCropped(resultCode, data, ID_PLACER_WALLPAPER);
-				break;
-
-			case ID_CROP_LOCKPAPER:
-				onImageCropped(resultCode, data, ID_PLACER_LOCKPAPER);
-				break;
-
-			case ID_PLACER_WALLPAPER:
-			case ID_PLACER_LOCKPAPER:
-				if (resultCode == Activity.RESULT_OK) {
-					Log.d(TAG, "placer ok");
-					File imgFile = new File(data.getData().getPath());
-					WallPaperUpdater.TextParam param = getTextParamFromIntent(data);
-
-					if (requestCode == ID_PLACER_WALLPAPER) {
-						WallPaperUpdater.setWallPaperTextParam(param);
-						WallPaperUpdater.setWallPaperTemplate(imgFile);
-						// TODO: Check service running state
-						WallPaperUpdater.updateWallPaper();
-					} else {
-						WallPaperUpdater.setLockPaperTextParam(param);
-						WallPaperUpdater.setLockPaperTemplate(imgFile);
-						// TODO: Check service running state
-						WallPaperUpdater.updateLockPaper();
-					}
-				}
-				break;
-
-			default:
-				Log.e(TAG, "unkown requestCode return: " + requestCode);
+		if (!wallPaperPicker.onActivityResult(requestCode, resultCode, data)) {
+			Log.e(TAG, "unkown requestCode return: " + requestCode);
 		}
 	}
 
-	private WallPaperUpdater.TextParam getTextParamFromIntent(Intent data)
-	{
-		WallPaperUpdater.TextParam param = new WallPaperUpdater.TextParam();
-		param.textSize = data.getFloatExtra(TextPlacerActivity.Extra.FontSize, 0f);
-		param.fontPath = data.getStringExtra(TextPlacerActivity.Extra.FontPath);
-		param.xCenter = data.getFloatExtra(TextPlacerActivity.Extra.FontCenterX, 0f);
-		param.baseLine = data.getFloatExtra(TextPlacerActivity.Extra.FontBaseLine, 0f);
-		param.color = data.getIntExtra(TextPlacerActivity.Extra.Color, 0);
-		return param;
-	}
-
-	private void onImageCropped(int resultCode, Intent data, int nextStepID)
-	{
-		if (resultCode == Activity.RESULT_OK) {
-			Uri out = Crop.getOutput(data);
-			Intent intent = new Intent(MyApp.getContext(), TextPlacerActivity.class);
-			intent.setData(out);
-			startActivityForResult(intent, nextStepID);
-		}
-	}
-
-	private void onImageSelected(int resultCode, Intent data,
-	                             WallPaperUpdater.Size size, int nextStepID)
-	{
-		if (resultCode == Activity.RESULT_OK) {
-			Uri uri = data.getData();
-			Activity parentAct = getActivity();
-			File cacheFile = new File(parentAct.getCacheDir(), "crop");
-			Uri outUri = Uri.fromFile(cacheFile);
-			Crop crop = new Crop(uri);
-			crop.output(outUri)
-					.withAspect(size.weight, size.height)
-					.withMaxSize(size.weight, size.height)
-					.start(parentAct, this, nextStepID);
-		}
-	}
-
-
-	private void onSelectPaperBtnClick(int nextStepID)
-	{
-		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		intent.addCategory(Intent.CATEGORY_OPENABLE);
-		intent.setType("image/*");
-
-		startActivityForResult(intent, nextStepID);
-	}
 
 
 	private static final String TAG = "SettingFragment";
-	private static final int ID_SEL_WALLPAPER = 0x305;
-	private static final int ID_CROP_WALLPAPER = 0x306;
-	private static final int ID_PLACER_WALLPAPER = 0x307;
-
-	private static final int ID_SEL_LOCKPAPER = 0x308;
-	private static final int ID_CROP_LOCKPAPER = 0x309;
-	private static final int ID_PLACER_LOCKPAPER = 0x30a;
 
 	// These variable will be init in initPreferenceVar()
 	private SwitchPreference prefServiceEnable;
@@ -288,5 +194,7 @@ public class SettingFragment extends PreferenceFragment{
 	private Preference prefSelectLockPaper;
 	private CheckBoxPreference prefUpdateWallPaper;
 	private Preference prefSelectWallPaper;
+
+	private WallPaperPicker wallPaperPicker;
 
 }
