@@ -54,7 +54,7 @@ public class SettingFragment extends PreferenceFragment{
 					@Override
 					public boolean onPreferenceClick(Preference preference)
 					{
-						wallPaperPicker.startFromPicker(WallPaperPicker.PaperType.WALL_PAPER_ROLL);
+						wallPaperPicker.startFromPicker(WallPaperPicker.PaperType.WALL_PAPER);
 						return false;
 					}
 				}

@@ -81,14 +81,30 @@ public class WallPaperUpdater {
 		return setLockPaperMethod != null;
 	}
 
-	public static Size getWallPaperSize()
+	public static Size getDefaultWallPaperSize()
 	{
 		Size size = new Size();
 		size.weight = mWallManager.getDesiredMinimumWidth();
 		size.height = mWallManager.getDesiredMinimumHeight();
-		return size;
+
+		if (size.weight != 0 && size.height != 0) {
+			return size;
+		} else {
+			return getRollingWallPaperSize();
+		}
 	}
 
+	public static Size getFixedWallPaperSize()
+	{
+		return getScreenSize();
+	}
+
+	public static Size getRollingWallPaperSize()
+	{
+		Size size = getScreenSize();
+		size.weight *= 2;
+		return size;
+	}
 	/*
 		Try return Lock Screen Paper Size according to API in MeiZu FlyMe OS first
 		or return size of screen in other ROMs
@@ -117,7 +133,7 @@ public class WallPaperUpdater {
 
 		// Not successful, return size of screen
 		if (!hasGetSize) {
-			size = getScreenPixels();
+			size = getScreenSize();
 		}
 
 		return size;
@@ -189,7 +205,7 @@ public class WallPaperUpdater {
 		int countDownNumber = getCountDownNumber();
 		Bitmap template = decodeStoredImage(wallPaperFileName);
 		if (template == null) {
-			template = createEmptyBitmap(getWallPaperSize());
+			template = createEmptyBitmap(getDefaultWallPaperSize());
 		}
 
 		TextParam textParam = readTextParam(wallTextParamSPKey);
@@ -271,7 +287,7 @@ public class WallPaperUpdater {
 		}
 	}
 
-	private static Size getScreenPixels()
+	private static Size getScreenSize()
 	{
 		WindowManager windowManager =
 				(WindowManager) appCont.getSystemService(Context.WINDOW_SERVICE);

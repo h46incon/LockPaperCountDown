@@ -17,8 +17,7 @@ import java.io.File;
  */
 public class WallPaperPicker {
 	public static enum PaperType{
-		WALL_PAPER_ROLL,
-		WALL_PAPER_FIX,
+		WALL_PAPER,
 		LOCK_PAPER
 	}
 
@@ -39,7 +38,7 @@ public class WallPaperPicker {
 		switch (requestCode) {
 			case ID_SEL_WALLPAPER:
 				onImageSelected(resultCode, data,
-						WallPaperUpdater.getWallPaperSize(), ID_CROP_WALLPAPER);
+						WallPaperUpdater.getDefaultWallPaperSize(), ID_CROP_WALLPAPER);
 				break;
 
 			case ID_SEL_LOCKPAPER:
@@ -85,11 +84,7 @@ public class WallPaperPicker {
 	public void startFromPicker(PaperType type)
 	{
 		switch (type) {
-			case WALL_PAPER_FIX:
-				selectPaper(ID_SEL_WALLPAPER);
-				break;
-
-			case WALL_PAPER_ROLL:
+			case WALL_PAPER:
 				selectPaper(ID_SEL_WALLPAPER);
 				break;
 
@@ -104,7 +99,18 @@ public class WallPaperPicker {
 
 	public void startFromCropper(PaperType type, Uri input)
 	{
-		// TODO
+		switch (type) {
+			case WALL_PAPER:
+				cropImage(input, WallPaperUpdater.getDefaultWallPaperSize(), ID_CROP_WALLPAPER);
+				break;
+
+			case LOCK_PAPER:
+				cropImage(input, WallPaperUpdater.getLockPaperSize(), ID_CROP_LOCKPAPER);
+				break;
+
+			default:
+				break;
+		}
 	}
 
 
@@ -134,19 +140,24 @@ public class WallPaperPicker {
 	{
 		if (resultCode == Activity.RESULT_OK) {
 			Uri uri = data.getData();
-			File cacheFile = new File(MyApp.getContext().getCacheDir(), "crop");
-			Uri outUri = Uri.fromFile(cacheFile);
-			Crop crop = new Crop(uri);
-			crop.output(outUri)
-					.withAspect(size.weight, size.height)
-					.withMaxSize(size.weight, size.height);
+			cropImage(uri, size, nextStepID);
+		}
+	}
 
-			if (mActivity != null) {
-				crop.start(mActivity, nextStepID);
-			} else {
-				Activity pAct = mFragment.getActivity();
-				crop.start(pAct, mFragment, nextStepID);
-			}
+	private void cropImage(Uri uri, WallPaperUpdater.Size size, int thisStepID)
+	{
+		File cacheFile = new File(MyApp.getContext().getCacheDir(), "crop");
+		Uri outUri = Uri.fromFile(cacheFile);
+		Crop crop = new Crop(uri);
+		crop.output(outUri)
+				.withAspect(size.weight, size.height)
+				.withMaxSize(size.weight, size.height);
+
+		if (mActivity != null) {
+			crop.start(mActivity, thisStepID);
+		} else {
+			Activity pAct = mFragment.getActivity();
+			crop.start(pAct, mFragment, thisStepID);
 		}
 	}
 
