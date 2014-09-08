@@ -98,12 +98,23 @@ public class TextPlacerActivity extends ImageAreaPickerActivity implements FontP
 		v.setEnsureVisable(false);
 		v.setMustInsideImage(false);
 		v.setHandleMode(HighlightView.HandleMode.Always);
+		v.setDarkenOutSide(false);
+		final float maxHandlerRadius = v.getHandleRadius();
 
 		v.setOnDrawFinshed(new HighlightView.OnDrawFinished() {
 			@Override
 			public void onDrawFinished(HighlightView highlightView, Canvas canvas)
 			{
 				RectF viewArea = highlightView.getCropRectOnScreen();
+
+				// Reset Handler radius
+				float minLen = Math.min(viewArea.width(), viewArea.height());
+				float handlerR = minLen / 6;
+				if (handlerR > maxHandlerRadius) {
+					handlerR = maxHandlerRadius;
+				}
+				highlightView.setHandleRadius(handlerR);
+
 				drawTextInRect(canvas, viewArea);
 			}
 		});
